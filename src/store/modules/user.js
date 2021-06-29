@@ -4,6 +4,7 @@ import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
+  userId: '',
   name: '',
   avatar: '',
   introduction: '',
@@ -11,6 +12,9 @@ const state = {
 }
 
 const mutations = {
+  SET_USER_ID: (state, userId) => {
+    state.userId = userId
+  },
   SET_TOKEN: (state, token) => {
     state.token = token
   },
@@ -33,12 +37,14 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+      login({ email: username.trim(), password: password }).then(response => {
+        const { tokens, user } = response
+        commit('SET_TOKEN', tokens.access.token)
+        commit('SET_USER_ID', user.id)
+        setToken(tokens.access.token)
         resolve()
       }).catch(error => {
+        console.log(error);
         reject(error)
       })
     })
@@ -47,26 +53,16 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      getInfo(state.userId).then(response => {
+        const { role, name, avatar } = response
 
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
-
-        const { roles, name, avatar, introduction } = data
-
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
-
-        commit('SET_ROLES', roles)
+        commit('SET_ROLES', ['admin', 'developer','editor'])
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
-        resolve(data)
+        resolve(response)
       }).catch(error => {
+        console.log(error);
+        reject('Verification failed, please Login again.')
         reject(error)
       })
     })
@@ -80,9 +76,6 @@ const actions = {
         commit('SET_ROLES', [])
         removeToken()
         resetRouter()
-
-        // reset visited views and cached views
-        // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
 
         resolve()

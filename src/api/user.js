@@ -1,18 +1,18 @@
 import request from '@/utils/request'
+import CONSTANTS from '../constants';
 
 export function login(data) {
   return request({
-    url: '/vue-element-admin/user/login',
+    url: `${CONSTANTS.HOST}/v1/auth/login`,
     method: 'post',
     data
   })
 }
 
-export function getInfo(token) {
+export function getInfo(userId) {
   return request({
-    url: '/vue-element-admin/user/info',
-    method: 'get',
-    params: { token }
+    url: `${CONSTANTS.HOST}/v1/users/${userId}`,
+    method: 'get'
   })
 }
 
