@@ -28,6 +28,7 @@ const mutations = {
     state.avatar = avatar
   },
   SET_ROLES: (state, roles) => {
+    console.log("setstate", roles);
     state.roles = roles
   }
 }
@@ -54,14 +55,15 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.userId).then(response => {
-        const { role, name, avatar } = response
-
-        commit('SET_ROLES', ['admin', 'developer','editor'])
+        const { name, avatar } = response
+        const roles = ['admin', 'editor'];
+        response.roles = roles;
+        commit('SET_ROLES', roles)
         commit('SET_NAME', name)
+        console.log(avatar);
         commit('SET_AVATAR', avatar)
         resolve(response)
       }).catch(error => {
-        console.log(error);
         reject('Verification failed, please Login again.')
         reject(error)
       })

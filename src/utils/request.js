@@ -46,8 +46,7 @@ service.interceptors.response.use(
     const res = response.data
     // if the custom code is not 200, it is judged as an error.
     if (response.status !== 200) {
-    console.log(response.status);
-
+    console.log(response);
       Message({
         message: res.message || 'Error',
         type: 'error',
@@ -55,7 +54,8 @@ service.interceptors.response.use(
       })
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
-      return res
+      if (res) return res
+      return response
     }
   },
   error => {

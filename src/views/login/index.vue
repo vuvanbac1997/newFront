@@ -83,14 +83,14 @@ import { validUsername, validEmail } from "@/utils/validate";
 
 export default {
   name: "Login",
-  data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error("Please enter the correct user name"));
-      } else {
-        callback();
-      }
-    };
+  data: function() {
+    // const validateUsername = (rule, value, callback) => {
+    //   if (!validUsername(value)) {
+    //     callback(new Error("Please enter the correct user name"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
     const validateEmail= (rule, value, callback) => {
       if (!validEmail(value)) {
         callback(new Error("Please enter the correct email"));

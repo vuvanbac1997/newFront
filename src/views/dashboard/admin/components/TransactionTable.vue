@@ -36,16 +36,16 @@ export default {
       return str.substring(0, 30)
     }
   },
-  data() {
-    return {
+  data: function() {
+   return {
       list: null
     }
   },
-  created() {
+  created: function() {
     this.fetchData()
   },
   methods: {
-    fetchData() {
+    fetchData: function() {
       transactionList().then(response => {
         this.list = response.data.items.slice(0, 8)
       })
